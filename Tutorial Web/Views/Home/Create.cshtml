@@ -1,0 +1,39 @@
+﻿@using Tutorial_Web.Model
+@model StudentCenderModel
+
+
+<h1>创建学生</h1>
+
+<form method="post">
+    
+    @*<input type="text" name="FirstName" value=""/>*@
+    
+    <div>
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName"/>
+        <span asp-validation-for="FirstName"></span>
+    </div>
+    <div>
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" /> 
+        <span asp-validation-for="LastName"></span>
+    </div>
+    <div>
+        <label asp-for="BirthDate"></label>
+        <input asp-for="BirthDate" type="date" />
+        <span asp-validation-for="BirthDate"></span>
+    </div>
+    
+    <div>
+        <label asp-for="Gender"></label>
+        <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()"></select>
+        <span asp-validation-for="Gender"></span>
+    </div>
+    
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <button type="submit" name="save">submit</button>
+    </div>
+    
+</form>

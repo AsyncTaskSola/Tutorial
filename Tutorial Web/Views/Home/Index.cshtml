@@ -1,0 +1,39 @@
+﻿@*@model IEnumerable<Tutorial_Web.Model.Student>*@
+@*@model IEnumerable<Tutorial_Web.ViewModels.HomeIndexViewModel>*@
+@model Tutorial_Web.ViewModels.HomeIndexViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Hello From Index.cshtml!!!</title>
+</head>
+<body>
+<h1>Hello From Index.cshtml!!</h1>
+@*<h1>@Model.Id @Model.FirstName @Model.LastName</h1>*@
+
+<h2>Students</h2>
+<ul>
+    @foreach (var s in Model.Students)
+    {
+        @*<li>@s.FirstName @s.LastName</li>*@
+        <li>
+            @s.Name (@s.Age)
+            @*<a href="/Home/Detail/@s.Id">Detail</a>*@
+
+            @*@Html.ActionLink("明细", "Detail",new{id=s.Id});*@
+            <a asp-action="Detail" asp-route-id="@s.Id">Detail</a>
+        </li>
+    
+    }
+</ul>
+<div>
+    <a asp-action="Create">添加一个学生</a>
+</div>
+</body>
+</html>

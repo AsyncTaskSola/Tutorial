@@ -1,0 +1,30 @@
+﻿@model Tutorial_Web.Model.Student
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Detail</title>
+</head>
+<body>
+<div>
+    <h1>Student Message </h1>
+    <div>ID:@Model.Id</div>
+    <div>
+        Name:@Model.FirstName  @Model.LastName
+    </div>
+    <div>
+        Sex:@Model.Gender
+    </div>
+    <div>
+        Birthday:@Model.BirthDate
+    </div>
+    <a asp-action="Index">Balck to home</a>
+    
+</div>
+</body>
+</html>
