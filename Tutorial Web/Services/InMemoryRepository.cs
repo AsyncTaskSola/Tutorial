@@ -46,6 +46,7 @@ namespace Tutorial_Web.Services
         public Student GetById(int id)
         {
             return _students.FirstOrDefault(x => x.Id == id);
+           // return _students.Find(x=>x.Id==id);
 
         }
 

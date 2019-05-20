@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Tutorial_Web.Data;
 using Tutorial_Web.Model;
 using Tutorial_Web.Services;
 
@@ -12,11 +13,25 @@ namespace Tutorial_Web
 {
     public class Startup
     {
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMvc();
+            //var ass = _configuration["ConnectionStrings:DefaultConnection"];
+            services.AddDbContext<DataContext>(option =>
+            {
+          
+                option.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
+            });
             services.AddSingleton<IWelcomeService, WelcomeService>();
-            services.AddSingleton<IRepository<Student>, InMemoryRepository>();
+            //services.AddSingleton<IRepository<Student>, InMemoryRepository>();
+            services.AddScoped<IRepository<Student>, EfCoreRepository>();
         }
 
         public void Configure(
