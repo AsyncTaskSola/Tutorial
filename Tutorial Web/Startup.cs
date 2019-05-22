@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.IO;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Tutorial_Web.Data;
 using Tutorial_Web.Model;
@@ -32,6 +37,40 @@ namespace Tutorial_Web
             services.AddSingleton<IWelcomeService, WelcomeService>();
             //services.AddSingleton<IRepository<Student>, InMemoryRepository>();
             services.AddScoped<IRepository<Student>, EfCoreRepository>();
+
+            #region IdentityService
+            //配置identity数据库这一块
+            services.AddDbContext<IdentityDbContext>(options =>
+                options.UseSqlServer(
+                    _configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Tutorial Web")));
+            //注册服务
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<IdentityDbContext>();
+
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;//需要数字
+                options.Password.RequireLowercase = false;//需要小写字母
+                options.Password.RequireNonAlphanumeric = false;//需要非数值类行
+                options.Password.RequireUppercase = false;//需要大写
+                options.Password.RequiredLength = 1;
+                options.Password.RequiredUniqueChars = 1;
+
+                //Lockout settings.
+                //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                //options.Lockout.MaxFailedAccessAttempts = 5;
+                //options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            });
+
+
+            #endregion
         }
 
         public void Configure(
@@ -77,27 +116,36 @@ namespace Tutorial_Web
 
             #endregion
 
+            app.UseAuthentication();
             #region Check2
 
             //app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                RequestPath = "/node_modules",
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath,"node_modules"))
+                
+            });
+
             //app.UseFileServer();
 
             #endregion
 
             //app.UseMvcWithDefaultRoute() ;
 
+
             app.UseMvc(Builder =>
             {
                 Builder.MapRoute("defult", "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.Run(async (context) =>
-            {
-                //throw new Exception("error");
-                var welcome = /*iConfiguration["Welcome"];*/welcomeService.getMessage();
-                await context.Response.WriteAsync(welcome);
-            });
+            //app.Run(async (context) =>
+            //{
+            //    //throw new Exception("error");
+            //    var welcome = /*iConfiguration["Welcome"];*/welcomeService.getMessage();
+            //    await context.Response.WriteAsync(welcome);
+            //});
         }
     }
 }

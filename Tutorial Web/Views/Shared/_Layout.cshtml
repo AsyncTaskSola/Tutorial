@@ -1,22 +1,96 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-</head>
-<body>
-    <h1>123456</h1>
-    <div>
-        @RenderBody()
-    </div>
-    <hr />
+@inject SignInManager<IdentityUser> SignInManager
 
-    <div>
-        @RenderSection("bottom", false)
-    </div>
 
-@*@await Component.InvokeAsync("Welcome")*@
-<vc:welcome></vc:welcome>
-</body>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>@ViewBag.Title</title>
+
+        <environment include="Development">
+            <link href="~/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+        </environment>
+        <environment exclude="Development">
+            <link href="https://cdn.bootcss.com/twitter-bootstrap/4.2.1/css/bootstrap.css"
+                  asp-fallback-href="~/node_modules/bootstrap/dist/css/bootstrap.css"
+                  asp-fallback-test-class="sr-only"
+                  asp-fallback-test-property="position"
+                  asp-fallback-test-value="absolute" />
+
+        </environment>
+
+
+    </head>
+    <body>
+        <h1>Tutorial Web</h1>
+        <nav class="navbar navbar-light bg-light">
+            <span class="navbar-brand mb-0 h1">Navbar</span>
+
+
+
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <form asp-action="Logout" asp-controller="Account" method="post" id="logoutForm">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a href="javascript:document.getElementById('logoutForm').submit()">登出</a>
+                        </li>
+                    </ul>
+                </form>
+            }
+            else
+            {
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a asp-action="Register" asp-controller="Account">注册</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-action="Login" asp-controller="Account">登陆</a>
+                    </li>
+                </ul>
+            }
+
+
+
+
+        </nav>
+
+        <div>
+            @RenderBody()
+        </div>
+        <hr />
+
+        <div>
+            @RenderSection("bottom", false)
+        </div>
+
+        @*@await Component.InvokeAsync("Welcome")*@
+        <vc:welcome></vc:welcome>
+
+
+        <environment include="Development">
+            <script src="~/node_modules/jquery/dist/jquery.js"></script>
+            <script src="~/node_modules/jquery-validation/dist/jquery.validate.js"></script>
+            <script src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
+        </environment>
+
+
+        <environment exclude="Development">
+            <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"
+                    asp-fallback-src="~/node_modules/jquery/dist/jquery.js"
+                    asp-fallback-test="Windows.jQuery"></script>
+
+            <script src="https://cdn.bootcss.com/jquery-validate/1.19.0/jquery.validate.min.js"
+                    asp-fallback-src="~/node_modules/jquery-validation/dist/jquery.validate.js"
+                    asp-fallback-test="Windows.jQuery&& Windows.jQuery.validate"></script>
+
+            <script src="https://cdn.bootcss.com/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"
+                    asp-fallback-src="~/node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"
+                    asp-fallback-test="Windows.jQuery&& Windows.jQuery.validate&& Windows.jQuery.validate.unobtrusive"></script>
+        </environment>
+
+    </body>
 </html>

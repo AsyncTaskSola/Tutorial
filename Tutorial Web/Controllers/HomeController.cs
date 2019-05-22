@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tutorial_Web.Model;
 using Tutorial_Web.Services;
@@ -57,11 +58,14 @@ namespace Tutorial_Web.Controllers
             return View(student);
         }
 
+        [Authorize]
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken ]
         public IActionResult Create(StudentCenderModel student)
